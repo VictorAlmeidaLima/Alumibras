@@ -23,6 +23,7 @@ public class AlterarMedia implements EventoProgramavelJava
     JapeWrapper medVendasDAO = JapeFactory.dao("AD_BHGIRMEDVENDA");
 
 
+
     private void gerarMediaCalculada(BigDecimal codProd, int ano, DynamicVO vo) throws Exception {
 
         NativeSql query = getNativeSql();
