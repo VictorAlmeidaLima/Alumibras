@@ -1,0 +1,221 @@
+<gadget>
+    <prompt-parameters>
+        <parameter id="PERIODO" description="Período" metadata="datePeriod" required="true" keep-last="true" keep-date="false" order="0"/>
+        <parameter id="CODPROD" description="Produto" metadata="entity:Produto@null" required="false" keep-last="false" keep-date="false" order="1"/>
+        <parameter id="CODEMP" description="Empresa" metadata="multiList:Text" listType="sql" required="true" keep-last="true" keep-date="false" order="2">
+            <expression type="SQL"><![CDATA[SELECT CODEMP AS VALUE, CODEMP||'|'||RAZAOSOCIAL AS LABEL FROM TSIEMP ORDER BY CODEMP]]></expression>
+        </parameter>
+    </prompt-parameters>
+    <level id="lvl_hpf6pc" description="Menu">
+        <container orientacao="V" tamanhoRelativo="100">
+            <container orientacao="H" tamanhoRelativo="117">
+                <container orientacao="V" tamanhoRelativo="292">
+                    <simple-value id="svl_hpf6pm">
+                        <value-expression><![CDATA[<u><div style='text-align: left;'><span style='background-color: white; font-size: 18px; color: WHITE;'><button style="width: 100%; height: 80px; background-color: green; border: 1px solid BLACK; "><b><span style='font-family: Verdana, Geneva, sans-serif; font-size: 24px; color: WHITE;'>Movimentação de Estoque</span></b></button></span></div></u><span style='font-family: "Comic Sans MS", cursive, sans-serif;'></span>
+]]></value-expression>
+                    </simple-value>
+                </container>
+                <container orientacao="V" tamanhoRelativo="100">
+                    <simple-value id="svl_hpf6pn">
+                        <value-expression><![CDATA[<img style='width: 100%; height: 80px;' src="http://dmaluminios.com.br/wp-content/uploads/2016/09/marca-dma-website.png" alt="DMA">]]></value-expression>
+                    </simple-value>
+                </container>
+            </container>
+            <container orientacao="H" tamanhoRelativo="564">
+                <container orientacao="V" tamanhoRelativo="100">
+                    <container orientacao="V" tamanhoRelativo="25">
+                        <simple-value id="svl_uickfm">
+                            <value-expression><![CDATA[<u><div style='text-align: left;'><span style='background-color: white; font-size: 18px; color: WHITE;'><button           style="width: 180px; height: 80px; background-color: green; border: 1px solid BLACK; "><b><span style='font-family: Verdana, Geneva, sans-serif; font-size: 18px; color: WHITE;'>Tabela Dinâmica</span></b></button></span></div></u><span tyle='font-family: "Comic Sans MS", cursive, sans-serif;'></span>]]></value-expression>
+                        </simple-value>
+                    </container>
+                    <container orientacao="V" tamanhoRelativo="25">
+                        <simple-value id="svl_uicko6">
+                            <value-expression><![CDATA[<u><div style='text-align: left;'><span style='background-color: white; font-size: 18px; color: WHITE;'><button           style="width: 180px; height: 80px; background-color: green; border: 1px solid BLACK; "><b><span style='font-family: Verdana, Geneva, sans-serif; font-size: 18px; color: WHITE;'>Análise por Mês</span></b></button></span></div></u><span tyle='font-family: "Comic Sans MS", cursive, sans-serif;'></span>]]></value-expression>
+                        </simple-value>
+                    </container>
+                    <container orientacao="V" tamanhoRelativo="25">
+                        <simple-value id="svl_uicko7">
+                            <value-expression><![CDATA[<u><div style='text-align: left;'><span style='background-color: white; font-size: 18px; color: WHITE;'><button           style="width: 180px; height: 80px; background-color: green; border: 1px solid BLACK; "><b><span style='font-family: Verdana, Geneva, sans-serif; font-size: 18px; color: WHITE;'>Gráficos</span></b></button></span></div></u><span tyle='font-family: "Comic Sans MS", cursive, sans-serif;'></span>]]></value-expression>
+                        </simple-value>
+                    </container>
+                    <container orientacao="V" tamanhoRelativo="25">
+                        <simple-value id="svl_uicktc">
+                            <value-expression><![CDATA[<u><div style='text-align: left;'><span style='background-color: white; font-size: 18px; color: WHITE;'><button           style="width: 180px; height: 80px; background-color: green; border: 1px solid BLACK; "><b><span style='font-family: Verdana, Geneva, sans-serif; font-size: 18px; color: WHITE;'>Análise por Mês</span></b></button></span></div></u><span tyle='font-family: "Comic Sans MS", cursive, sans-serif;'></span>]]></value-expression>
+                        </simple-value>
+                    </container>
+                </container>
+                <container orientacao="V" tamanhoRelativo="453">
+                    <pivot-table id="pvt_i99fdk">
+                        <expression type="sql" data-source="MGEDS"><![CDATA[SELECT
+       PRO.CODPROD,
+       PRO.DESCRPROD,
+       PRO.REFERENCIA,
+       TO_CHAR(CAB.DTPREVENT,'MM/YYYY') AS ANOMES,
+       TO_NUMBER(TO_CHAR(CAB.DTPREVENT,'YYYYMM')) AS MESANO,
+       0 AS SALDOINICIAL,
+       SUM(QTDNEG-QTDENTREGUE) AS COMPRAS,
+       SUM(NVL(MED.MEDIA,0)) AS VENDAS,
+       SUM(QTDNEG-QTDENTREGUE) - SUM(NVL(MED.MEDIA,0)) AS ESTOQUE_FINAL
+
+FROM TGFPRO PRO
+            LEFT JOIN TGFITE ITE ON ITE.CODPROD = PRO.CODPROD --AND ITE.PENDENTE = 'S'
+            LEFT JOIN TGFCAB CAB ON ITE.NUNOTA = CAB.NUNOTA AND CODTIPOPER = 76 AND CAB.STATUSNOTA = 'L'
+            LEFT JOIN VGF_MEDVENDAS MED ON PRO.CODPROD = MED.CODPROD AND TO_CHAR(CAB.DTPREVENT,'MM/YYYY') = MED.ANOMES
+
+WHERE PRO.ATIVO = 'S'
+  AND PRO.DESCRPROD LIKE '%DM110%'
+--filtros
+  AND CAB.DTPREVENT >= :PERIODO.INI
+  AND CAB.DTPREVENT <= :PERIODO.FIN
+  AND (MED.CODPROD = :CODPROD OR :CODPROD IS NULL)
+
+
+GROUP BY PRO.CODPROD,PRO.DESCRPROD,PRO.REFERENCIA,TO_CHAR(CAB.DTPREVENT,'MM/YYYY'),TO_NUMBER(TO_CHAR(CAB.DTPREVENT,'YYYYMM'))
+
+ORDER BY TO_NUMBER(TO_CHAR(CAB.DTPREVENT,'YYYYMM')) , PRO.CODPROD]]></expression>
+                        <metadata>
+                            <field name="CODPROD" label="CODPROD" type="I" visible="true" useFooter="false"/>
+                            <field name="DESCRPROD" label="DESCRPROD" type="S" visible="true" useFooter="false"/>
+                            <field name="REFERENCIA" label="Produto" type="S" visible="true" useFooter="false"/>
+                            <field name="ANOMES" label="Mês / Ano" type="S" visible="true" useFooter="false"/>
+                            <field name="MESANO" label="MESANO" type="I" visible="true" useFooter="false"/>
+                            <field name="SALDOINICIAL" label="Saldo Inicial" type="F" visible="true" useFooter="false"/>
+                            <field name="COMPRAS" label="Compras" type="I" visible="true" useFooter="false"/>
+                            <field name="VENDAS" label="Vendas" type="I" visible="true" useFooter="false"/>
+                            <field name="ESTOQUE_FINAL" label="Est.Final" type="I" visible="true" useFooter="false"/>
+                        </metadata>
+                        <initial showDefaultView="true">
+                            <column-ini>ANOMES, REFERENCIA, SALDOINICIAL, COMPRAS, VENDAS, ESTOQUE_FINAL</column-ini>
+                            <line-ini/>
+                            <aggregatorName-ini>SOMA</aggregatorName-ini>
+                            <rendererName-ini>TABELA</rendererName-ini>
+                            <vals-ini/>
+                        </initial>
+                    </pivot-table>
+                </container>
+            </container>
+        </container>
+    </level>
+    <level id="lvl_uickdb" description="Tela Principal">
+        <container orientacao="V" tamanhoRelativo="100">
+            <container orientacao="H" tamanhoRelativo="244">
+                <container orientacao="V" tamanhoRelativo="660">
+                    <simple-value id="svl_uickdk"/>
+                </container>
+                <container orientacao="V" tamanhoRelativo="100">
+                    <simple-value id="svl_uickdl"/>
+                </container>
+            </container>
+            <container orientacao="H" tamanhoRelativo="2389">
+                <container orientacao="V" tamanhoRelativo="100">
+                    <container orientacao="V" tamanhoRelativo="25">
+                        <simple-value id="svl_uickdh"/>
+                    </container>
+                    <container orientacao="V" tamanhoRelativo="25">
+                        <simple-value id="svl_uiclok"/>
+                    </container>
+                    <container orientacao="V" tamanhoRelativo="25">
+                        <simple-value id="svl_uiclol"/>
+                    </container>
+                    <container orientacao="V" tamanhoRelativo="25">
+                        <simple-value id="svl_uiclom"/>
+                    </container>
+                </container>
+                <container orientacao="V" tamanhoRelativo="465">
+                    <pivot-table id="pvt_uickdi">
+                        <expression type="sql" data-source="MGEDS"><![CDATA[SELECT
+       PRO.CODPROD,
+       PRO.DESCRPROD,
+       PRO.REFERENCIA,
+       TO_CHAR(CAB.DTPREVENT,'MM/YYYY') AS ANOMES,
+       0 AS SALDOINICIAL,
+       SUM(QTDNEG-QTDENTREGUE) AS COMPRAS,
+       SUM(MED.MEDIA) AS VENDAS,
+       SUM(QTDNEG-QTDENTREGUE) - SUM(MED.MEDIA) AS ESTOQUE_FINAL
+
+FROM TGFPRO PRO
+       INNER JOIN TGFITE ITE ON ITE.CODPROD = PRO.CODPROD AND ITE.PENDENTE = 'S'
+       INNER JOIN TGFCAB CAB ON ITE.NUNOTA = CAB.NUNOTA AND CODTIPOPER = 76 AND CAB.STATUSNOTA = 'L'
+       INNER JOIN VGF_MEDVENDAS MED ON PRO.CODPROD = MED.CODPROD AND TO_CHAR(CAB.DTPREVENT,'MM/YYYY') = MED.ANOMES
+
+WHERE PRO.ATIVO = 'S'
+  AND PRO.DESCRPROD LIKE '%DM110%'
+
+GROUP BY PRO.CODPROD,PRO.DESCRPROD,PRO.REFERENCIA,TO_CHAR(CAB.DTPREVENT,'MM/YYYY')]]></expression>
+                        <metadata>
+                            <field name="CODPROD" label="CODPROD" type="I" visible="true" useFooter="false"/>
+                            <field name="DESCRPROD" label="DESCRPROD" type="S" visible="true" useFooter="false"/>
+                            <field name="REFERENCIA" label="REFERENCIA" type="S" visible="true" useFooter="false"/>
+                            <field name="ANOMES" label="ANOMES" type="S" visible="true" useFooter="false"/>
+                            <field name="SALDOINICIAL" label="SALDOINICIAL" type="F" visible="true" useFooter="false"/>
+                            <field name="COMPRAS" label="COMPRAS" type="I" visible="true" useFooter="false"/>
+                            <field name="VENDAS" label="VENDAS" type="I" visible="true" useFooter="false"/>
+                            <field name="ESTOQUE_FINAL" label="ESTOQUE_FINAL" type="I" visible="true" useFooter="false"/>
+                        </metadata>
+                    </pivot-table>
+                </container>
+            </container>
+        </container>
+    </level>
+    <level id="lvl_uicliu" description="Graficos">
+        <container orientacao="V" tamanhoRelativo="100">
+            <container orientacao="H" tamanhoRelativo="244">
+                <container orientacao="V" tamanhoRelativo="660">
+                    <simple-value id="svl_uickdk"/>
+                </container>
+                <container orientacao="V" tamanhoRelativo="100">
+                    <simple-value id="svl_uickdl"/>
+                </container>
+            </container>
+            <container orientacao="H" tamanhoRelativo="2389">
+                <container orientacao="V" tamanhoRelativo="100">
+                    <container orientacao="V" tamanhoRelativo="25">
+                        <simple-value id="svl_uickdh"/>
+                    </container>
+                    <container orientacao="V" tamanhoRelativo="25">
+                        <simple-value id="svl_uiclok"/>
+                    </container>
+                    <container orientacao="V" tamanhoRelativo="25">
+                        <simple-value id="svl_uiclol"/>
+                    </container>
+                    <container orientacao="V" tamanhoRelativo="25">
+                        <simple-value id="svl_uiclom"/>
+                    </container>
+                </container>
+                <container orientacao="V" tamanhoRelativo="465">
+                    <pivot-table id="pvt_uickdi">
+                        <expression type="sql" data-source="MGEDS"><![CDATA[SELECT
+       PRO.CODPROD,
+       PRO.DESCRPROD,
+       PRO.REFERENCIA,
+       TO_CHAR(CAB.DTPREVENT,'MM/YYYY') AS ANOMES,
+       0 AS SALDOINICIAL,
+       SUM(QTDNEG-QTDENTREGUE) AS COMPRAS,
+       SUM(MED.MEDIA) AS VENDAS,
+       SUM(QTDNEG-QTDENTREGUE) - SUM(MED.MEDIA) AS ESTOQUE_FINAL
+
+FROM TGFPRO PRO
+       INNER JOIN TGFITE ITE ON ITE.CODPROD = PRO.CODPROD AND ITE.PENDENTE = 'S'
+       INNER JOIN TGFCAB CAB ON ITE.NUNOTA = CAB.NUNOTA AND CODTIPOPER = 76 AND CAB.STATUSNOTA = 'L'
+       INNER JOIN VGF_MEDVENDAS MED ON PRO.CODPROD = MED.CODPROD AND TO_CHAR(CAB.DTPREVENT,'MM/YYYY') = MED.ANOMES
+
+WHERE PRO.ATIVO = 'S'
+  AND PRO.DESCRPROD LIKE '%DM110%'
+
+GROUP BY PRO.CODPROD,PRO.DESCRPROD,PRO.REFERENCIA,TO_CHAR(CAB.DTPREVENT,'MM/YYYY')]]></expression>
+                        <metadata>
+                            <field name="CODPROD" label="CODPROD" type="I" visible="true" useFooter="false"/>
+                            <field name="DESCRPROD" label="DESCRPROD" type="S" visible="true" useFooter="false"/>
+                            <field name="REFERENCIA" label="REFERENCIA" type="S" visible="true" useFooter="false"/>
+                            <field name="ANOMES" label="ANOMES" type="S" visible="true" useFooter="false"/>
+                            <field name="SALDOINICIAL" label="SALDOINICIAL" type="F" visible="true" useFooter="false"/>
+                            <field name="COMPRAS" label="COMPRAS" type="I" visible="true" useFooter="false"/>
+                            <field name="VENDAS" label="VENDAS" type="I" visible="true" useFooter="false"/>
+                            <field name="ESTOQUE_FINAL" label="ESTOQUE_FINAL" type="I" visible="true" useFooter="false"/>
+                        </metadata>
+                    </pivot-table>
+                </container>
+            </container>
+        </container>
+    </level>
+</gadget>

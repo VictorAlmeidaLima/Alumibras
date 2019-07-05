@@ -1,0 +1,21 @@
+<configs>
+  <dataSources />
+  <defaultJbossPath>../jboss</defaultJbossPath>
+    <buildDir>/home/adamo/workspaceSankhya/projetos/extensoes-sankhyaw/Integration</buildDir>
+    <exportDir>/home/adamo/workspaceSankhya/projetos/extensoes-sankhyaw/Integration/artifacts</exportDir>
+  <recriaDefault>false</recriaDefault>
+  <cleanJboss>false</cleanJboss>
+  <devEnvironment>
+    <DataSource name="dsDevBase">
+      <dataBase>ORACLE</dataBase>
+      <host>localhost</host>
+      <sidInstance>xe</sidInstance>
+      <port>1521</port>
+      <user>desexterno</user>
+      <pass>tecsis</pass>
+      <baseName />
+      <poolSizeMin>0</poolSizeMin>
+      <poolSizeMax>0</poolSizeMax>
+    </DataSource>
+  </devEnvironment>
+</configs>

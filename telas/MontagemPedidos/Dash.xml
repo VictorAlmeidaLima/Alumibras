@@ -1,0 +1,1245 @@
+<gadget>
+    <prompt-parameters>
+        <parameter id="CODPROD" description="Produto" metadata="entity:Produto@null" required="false" keep-last="false" keep-date="false" order="1"/>
+        <parameter id="CODEMP" description="Empresa" metadata="multiList:Text" listType="sql" required="true" keep-last="true" keep-date="false" order="2">
+            <expression type="SQL"><![CDATA[SELECT CODEMP AS VALUE, CODEMP||'|'||RAZAOSOCIAL AS LABEL FROM TSIEMP ORDER BY CODEMP]]></expression>
+        </parameter>
+        <parameter id="MES1" description="Periodo 1" metadata="date" required="true" keep-last="true" keep-date="false" order="3"/>
+        <parameter id="MES2" description="Período 2" metadata="date" required="true" keep-last="true" keep-date="false" order="4"/>
+        <parameter id="MES3" description="Período 3" metadata="date" required="true" keep-last="true" keep-date="false" order="5"/>
+        <parameter id="SOMAALTPROD" description="Somar Prod.Alternativos" metadata="boolean" required="false" keep-last="true" keep-date="false" default="false" order="6"/>
+    </prompt-parameters>
+    <level id="lvl_hpf6pc" description="Meses Principal">
+        <args>
+            <arg id="A_MESP" type="integer"/>
+        </args>
+        <container orientacao="V" tamanhoRelativo="100">
+            <container orientacao="H" tamanhoRelativo="134">
+                <container orientacao="V" tamanhoRelativo="620">
+                    <simple-value id="svl_hpf6pm">
+                        <expression type="sql" data-source="MGEDS"><![CDATA[SELECT TO_CHAR(:PERIODO.INI,'MONTH/YYYY')||' - '||TO_CHAR(:PERIODO.FIN,'MONTH/YYYY') AS PERIODO, TO_CHAR(SYSDATE,'dd/MONTH/YYYY') AS DATA_ATUAL FROM DUAL]]></expression>
+                        <metadata>
+                            <field name="PERIODO" label="PERIODO" type="S" visible="true" useFooter="false"/>
+                            <field name="DATA_ATUAL" label="DATA_ATUAL" type="S" visible="true" useFooter="false"/>
+                        </metadata>
+                        <value-expression><![CDATA[<u><div style='text-align: left;'><span style='background-color: white; font-size: 18px; color: WHITE;'><button style="width: 100%; height: 100%; background-color: green; border: 1px solid BLACK; "><b><span style='font-family: Verdana, Geneva, sans-serif; font-size: 24px; color: WHITE;'>Movimentação de Estoque</span></b><br><b style='color: WHITE;'>$PERIODO<b></button></span></div></u><span style='font-family: "Comic Sans MS", cursive, sans-serif;'></span>
+]]></value-expression>
+                    </simple-value>
+                </container>
+                <container orientacao="V" tamanhoRelativo="100">
+                    <simple-value id="svl_hpf6pn">
+                        <value-expression><![CDATA[<img style='width: 100%; height: 100%;' src="http://dmaluminios.com.br/wp-content/uploads/2016/09/marca-dma-website.png" alt="DMA">]]></value-expression>
+                    </simple-value>
+                </container>
+            </container>
+            <container orientacao="H" tamanhoRelativo="842">
+                <container orientacao="H" tamanhoRelativo="100">
+                    <container orientacao="V" tamanhoRelativo="100">
+                        <container orientacao="H" tamanhoRelativo="110">
+                            <container orientacao="H" tamanhoRelativo="100">
+                                <container orientacao="V" tamanhoRelativo="171">
+                                    <simple-value id="svl_alslscn">
+                                        <args>
+                                            <arg id="A_MESP" type="integer"/>
+                                        </args>
+                                        <value-expression><![CDATA[<button style="border-radius: 5px; height: 100%; width: 100%"> <img src="https://img.icons8.com/metro/26/000000/double-left.png"> </button>]]></value-expression>
+                                        <on-click navigate-to="lvl_alsltbt">
+                                            <param id="A_MESP">-3</param>
+                                        </on-click>
+                                    </simple-value>
+                                </container>
+                                <container orientacao="V" tamanhoRelativo="147">
+                                    <simple-value id="svl_ahgel4g">
+                                        <value-expression><![CDATA[<button style="border-radius: 5px; height: 100%; width: 100%"> <img src="https://img.icons8.com/metro/26/000000/double-right.png"> </button>]]></value-expression>
+                                        <on-click navigate-to="lvl_alu617o">
+                                            <param id="A_MESP">3</param>
+                                        </on-click>
+                                    </simple-value>
+                                </container>
+                            </container>
+                            <container orientacao="V" tamanhoRelativo="324">
+                                <simple-value id="svl_ahgel4h">
+                                    <expression type="sql" data-source="MGEDS"><![CDATA[SELECT
+TO_CHAR(ADD_MONTHS(TO_DATE(:MES1),NVL(:A_MESP,0)),'MONTH/YYYY') AS MES1,
+TO_CHAR(ADD_MONTHS(TO_DATE(:MES2),NVL(:A_MESP,0)),'MONTH/YYYY') AS MES2,
+TO_CHAR(ADD_MONTHS(TO_DATE(:MES3),NVL(:A_MESP,0)),'MONTH/YYYY') AS MES3,
+
+CASE WHEN TO_CHAR(ADD_MONTHS(TO_DATE(:MES1),NVL(:A_MESP,0)),'MONTH/YYYY') >= TO_CHAR(SYSDATE,'MM/YYYY') THEN '<b> <td colspan="4" style="text-align: center; background-color: lightgrey;">Realizado</b></td>' ELSE '<b> <td colspan="4" style="text-align: center; background-color: lightgrey;">Previsto</b></td>' END AS PREV1,
+CASE WHEN TO_CHAR(ADD_MONTHS(TO_DATE(:MES2),NVL(:A_MESP,0)),'MONTH/YYYY') >= TO_CHAR(SYSDATE,'MM/YYYY') THEN '<b> <td colspan="4" style="text-align: center; background-color: lightgrey;">Realizado</b></td>' ELSE '<b> <td colspan="4" style="text-align: center; background-color: lightgrey;">Previsto</b></td>' END AS PREV2,
+CASE WHEN TO_CHAR(ADD_MONTHS(TO_DATE(:MES3),NVL(:A_MESP,0)),'MONTH/YYYY') >= TO_CHAR(SYSDATE,'MM/YYYY') THEN '<b> <td colspan="4" style="text-align: center; background-color: lightgrey;">Realizado</b></td>' ELSE '<b> <td colspan="4" style="text-align: center; background-color: lightgrey;">Previsto</b></td>' END AS PREV3
+
+from dual]]></expression>
+                                    <metadata>
+                                        <field name="MES1" label="MES1" type="S" visible="true" useFooter="false"/>
+                                        <field name="MES2" label="MES2" type="S" visible="true" useFooter="false"/>
+                                        <field name="MES3" label="MES3" type="S" visible="true" useFooter="false"/>
+                                        <field name="PREV1" label="PREV1" type="S" visible="true" useFooter="false"/>
+                                        <field name="PREV2" label="PREV2" type="S" visible="true" useFooter="false"/>
+                                        <field name="PREV3" label="PREV3" type="S" visible="true" useFooter="false"/>
+                                    </metadata>
+                                    <value-expression><![CDATA[<style> #tbl1 { border-collapse: collapse; border: 1px solid #fefffd; font: 100%/1.6 "Myriad Pro", Verdana, sans-serif; text-align: center; }</style><div style=" width:100%; height: 100%" > <b> <!-- Aqui usamos width para alterar a largura da tabela e border para definir uma borda à tabela --> <table id="tbl1" width="100%" border="1%" style="height: 100%; "> <tr style="height: 50px; width: auto"> <!-- Aqui também usamos o width para definir a largura e o height para definir a altura --> <b> <td colspan="4" style="text-align: center; background-color: green; color: white">$MES1</b></td> <b> <td colspan="4" style="text-align: center; background-color: green; color: white">$MES2</b></td> <b> <td colspan="4" style="text-align: center; background-color: green; color: white">$MES3</b></td> </tr> <tr style="height: 50px;"> <!-- Aqui também usamos o width para definir a largura e o height para definir a altura --> $PREV1 $PREV2 $PREV3 </tr> </table> </b></div>]]></value-expression>
+                                    <refresh-details ui-list="svl_hpf6pm,svl_hpf6pn,svl_alslscn,svl_ahgel4g">
+                                        <param id="A_MESP">3</param>
+                                    </refresh-details>
+                                </simple-value>
+                            </container>
+                        </container>
+                        <container orientacao="V" tamanhoRelativo="388">
+                            <grid id="grd_ahgel42" multiplaSelecao="N">
+                                <args>
+                                    <arg id="A_MESP" type="integer"/>
+                                </args>
+                                <expression type="sql" data-source="MGEDS"><![CDATA[SELECT
+PRODUTO.CODPROD,
+PRODUTO.DESCRPROD,
+PRODUTO.REFERENCIA,
+PRODUTO.TIPOMEDIA,
+       0 AS SALDOINICIAL1,
+       CASE WHEN :SOMAALTPROD = 'S' THEN PRODUTO.COMPRAS1+NVL(ALTERNATIVO.COMPRAS1,0) ELSE PRODUTO.COMPRAS1 END AS COMPRAS1,
+       CASE WHEN :SOMAALTPROD = 'S' THEN PRODUTO.VENDAS1+NVL(ALTERNATIVO.VENDAS1,0) ELSE PRODUTO.VENDAS1 END AS VENDAS1,
+       CASE WHEN :SOMAALTPROD = 'S' THEN (PRODUTO.COMPRAS1+NVL(ALTERNATIVO.COMPRAS1,0))-(PRODUTO.VENDAS1+NVL(ALTERNATIVO.VENDAS1,0)) ELSE (PRODUTO.COMPRAS1-PRODUTO.VENDAS1) END AS ESTOQUE_FINAL1,
+       0 AS SALDOINICIAL2,
+       CASE WHEN :SOMAALTPROD = 'S' THEN PRODUTO.COMPRAS2+NVL(ALTERNATIVO.COMPRAS2,0) ELSE PRODUTO.COMPRAS2 END AS COMPRAS2,
+       CASE WHEN :SOMAALTPROD = 'S' THEN PRODUTO.VENDAS2+NVL(ALTERNATIVO.VENDAS2,0) ELSE PRODUTO.VENDAS2 END AS VENDAS2,
+       CASE WHEN :SOMAALTPROD = 'S' THEN (PRODUTO.COMPRAS2+NVL(ALTERNATIVO.COMPRAS2,0))-(PRODUTO.VENDAS2+NVL(ALTERNATIVO.VENDAS2,0)) ELSE (PRODUTO.COMPRAS2-PRODUTO.VENDAS2) END AS ESTOQUE_FINAL2,
+       0 AS SALDOINICIAL3,
+       CASE WHEN :SOMAALTPROD = 'S' THEN PRODUTO.COMPRAS3+NVL(ALTERNATIVO.COMPRAS3,0) ELSE PRODUTO.COMPRAS3 END AS COMPRAS3,
+       CASE WHEN :SOMAALTPROD = 'S' THEN PRODUTO.VENDAS3+NVL(ALTERNATIVO.VENDAS3,0) ELSE PRODUTO.VENDAS3 END AS VENDAS3,
+       CASE WHEN :SOMAALTPROD = 'S' THEN (PRODUTO.COMPRAS3+NVL(ALTERNATIVO.COMPRAS3,0))-(PRODUTO.VENDAS3+NVL(ALTERNATIVO.VENDAS3,0)) ELSE (PRODUTO.COMPRAS3-PRODUTO.VENDAS3) END AS ESTOQUE_FINAL3
+
+FROM (
+
+     SELECT PRO.CODPROD,
+            PRO.DESCRPROD,
+            PRO.REFERENCIA,
+            MED.TIPOMEDIA,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES1,NVL(:A_MESP,0))), 'MM/YYYY') = PED.DTPREVENT THEN PED.QTDENTREGUE
+                  ELSE 0 END) AS COMPRAS1,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES1,NVL(:A_MESP,0))), 'MM/YYYY') = MED.ANOMES
+                          THEN NVL(MED.VALOR, 0)
+                  ELSE 0 END) AS VENDAS1,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES2,NVL(:A_MESP,0))), 'MM/YYYY') = PED.DTPREVENT THEN PED.QTDENTREGUE
+                  ELSE 0 END) AS COMPRAS2,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES2,NVL(:A_MESP,0))), 'MM/YYYY') = MED.ANOMES
+                          THEN NVL(MED.VALOR, 0)
+                  ELSE 0 END) AS VENDAS2,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES3,NVL(:A_MESP,0))), 'MM/YYYY') = PED.DTPREVENT THEN PED.QTDENTREGUE
+                  ELSE 0 END) AS COMPRAS3,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES3,NVL(:A_MESP,0))), 'MM/YYYY') = MED.ANOMES
+                          THEN NVL(MED.VALOR, 0)
+                  ELSE 0 END) AS VENDAS3
+
+     FROM TGFPRO PRO
+            LEFT JOIN VGF_MEDVENDAS MED ON PRO.CODPROD = MED.CODPROD
+            LEFT JOIN VGF_MEDCOMPRAS PED ON  MED.CODPROD = PED.CODPROD
+                                                AND MED.ANO = PED.ANO
+                                                AND MED.MES = PED.MES
+     WHERE 1=1
+       AND PRO.ATIVO = 'S'
+       AND PRO.DESCRPROD LIKE '%DM110%'
+       AND MED.ANO IN (TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES1,NVL(:A_MESP,0))),'YYYY')),TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES2,NVL(:A_MESP,0))),'YYYY')),TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES3,NVL(:A_MESP,0))),'YYYY')))
+       AND MED.MES IN (TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES1,NVL(:A_MESP,0))),'MM')),TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES2,NVL(:A_MESP,0))),'MM')),TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES3,NVL(:A_MESP,0))),'MM')))
+       AND(PRO.CODPROD = :CODPROD OR :CODPROD IS NULL)
+     GROUP BY PRO.CODPROD,
+              PRO.DESCRPROD,
+              PRO.REFERENCIA,
+              MED.TIPOMEDIA) PRODUTO LEFT JOIN
+
+    (SELECT ALT.CODPROD,
+            MED.TIPOMEDIA,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES1,NVL(:A_MESP,0))), 'MM/YYYY') = PED.DTPREVENT THEN PED.QTDENTREGUE
+                  ELSE 0 END) AS COMPRAS1,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES1,NVL(:A_MESP,0))), 'MM/YYYY') = MED.ANOMES
+                          THEN NVL(MED.VALOR, 0)
+                  ELSE 0 END) AS VENDAS1,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES2,NVL(:A_MESP,0))), 'MM/YYYY') = PED.DTPREVENT THEN PED.QTDENTREGUE
+                  ELSE 0 END) AS COMPRAS2,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES2,NVL(:A_MESP,0))), 'MM/YYYY') = MED.ANOMES
+                          THEN NVL(MED.VALOR, 0)
+                  ELSE 0 END) AS VENDAS2,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES3,NVL(:A_MESP,0))), 'MM/YYYY') = PED.DTPREVENT THEN PED.QTDENTREGUE
+                  ELSE 0 END) AS COMPRAS3,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES3,NVL(:A_MESP,0))), 'MM/YYYY') = MED.ANOMES
+                          THEN NVL(MED.VALOR, 0)
+                  ELSE 0 END) AS VENDAS3
+
+     FROM TGFPRO PRO
+            INNER JOIN TGFPAL ALT ON PRO.CODPROD = ALT.CODPRODALT
+            LEFT JOIN VGF_MEDVENDAS MED ON PRO.CODPROD = MED.CODPROD
+            LEFT JOIN VGF_MEDCOMPRAS PED ON  MED.CODPROD = PED.CODPROD
+                                               AND MED.ANO = PED.ANO
+                                               AND MED.MES = PED.MES
+     WHERE 1=1
+       AND PRO.ATIVO = 'S'
+       AND MED.ANO IN (TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES1,NVL(:A_MESP,0))),'YYYY')),TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES2,NVL(:A_MESP,0))),'YYYY')),TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES3,NVL(:A_MESP,0))),'YYYY')))
+       AND MED.MES IN (TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES1,NVL(:A_MESP,0))),'MM')),TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES2,NVL(:A_MESP,0))),'MM')),TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES3,NVL(:A_MESP,0))),'MM')))
+       AND(PRO.CODPROD = :CODPROD OR :CODPROD IS NULL)
+     GROUP BY ALT.CODPROD,
+              MED.TIPOMEDIA
+     ) ALTERNATIVO
+
+ON PRODUTO.CODPROD = ALTERNATIVO.CODPROD
+
+ORDER BY CODPROD]]></expression>
+                                <metadata>
+                                    <field name="CODPROD" label="Cód." type="I" visible="true" useFooter="false"/>
+                                    <field name="DESCRPROD" label="Produto" type="S" visible="true" useFooter="false"/>
+                                    <field name="REFERENCIA" label="Referência" type="S" visible="true" useFooter="false"/>
+                                    <field name="TIPOMEDIA" label="Tipo Média" type="S" visible="true" useFooter="false"/>
+                                    <field name="SALDOINICIAL1" label="Sld.Inicial" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#000000; background-color:#FFCC00">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="COMPRAS1" label="Compras" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#0066CC">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="VENDAS1" label="Vendas" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#009900">
+  <b>$VALUE</b>
+</span>]]></formatter>
+                                    </field>
+                                    <field name="ESTOQUE_FINAL1" label="Est.Final" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter lessThan="0"><![CDATA[<span style="; background-color:#FF3300">$VALUE</span>]]></formatter>
+                                        <formatter greaterThan="0"><![CDATA[<span style="; background-color:#009900">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="SALDOINICIAL2" label="Sld.Inicial(2)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="; background-color:#FFCC00">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="COMPRAS2" label="Compras(2)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#0066CC">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="VENDAS2" label="Vendas(2)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#009900">
+  <b>$VALUE</b>
+</span>]]></formatter>
+                                    </field>
+                                    <field name="ESTOQUE_FINAL2" label="Est.Final(2)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter lessThan="0"><![CDATA[<span style="; background-color:#FF3300">$VALUE</span>]]></formatter>
+                                        <formatter greaterThan="0"><![CDATA[<span style="; background-color:#009900">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="SALDOINICIAL3" label="Sld.Inicial(3)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="; background-color:#FFCC00">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="COMPRAS3" label="Compras(3)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#0066CC">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="VENDAS3" label="Vendas(3)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#009900">
+  <b>$VALUE</b>
+</span>]]></formatter>
+                                    </field>
+                                    <field name="ESTOQUE_FINAL3" label="Est.Final(3)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter greaterThan="0"><![CDATA[<span style="; background-color:#009900">$VALUE</span>]]></formatter>
+                                        <formatter lessThan="0"><![CDATA[<span style="; background-color:#FF3300">$VALUE</span>]]></formatter>
+                                    </field>
+                                </metadata>
+                            </grid>
+                        </container>
+                    </container>
+                </container>
+            </container>
+        </container>
+    </level>
+    <level id="lvl_alsltbt" description="Meses 1">
+        <args>
+            <arg id="A_MESP" type="integer"/>
+        </args>
+        <container orientacao="V" tamanhoRelativo="100">
+            <container orientacao="H" tamanhoRelativo="134">
+                <container orientacao="V" tamanhoRelativo="620">
+                    <simple-value id="svl_hpf6pm">
+                        <expression type="sql" data-source="MGEDS"><![CDATA[SELECT TO_CHAR(:PERIODO.INI,'MONTH/YYYY')||' - '||TO_CHAR(:PERIODO.FIN,'MONTH/YYYY') AS PERIODO, TO_CHAR(SYSDATE,'dd/MONTH/YYYY') AS DATA_ATUAL FROM DUAL]]></expression>
+                        <metadata>
+                            <field name="PERIODO" label="PERIODO" type="S" visible="true" useFooter="false"/>
+                            <field name="DATA_ATUAL" label="DATA_ATUAL" type="S" visible="true" useFooter="false"/>
+                        </metadata>
+                        <value-expression><![CDATA[<u><div style='text-align: left;'><span style='background-color: white; font-size: 18px; color: WHITE;'><button style="width: 100%; height: 100%; background-color: green; border: 1px solid BLACK; "><b><span style='font-family: Verdana, Geneva, sans-serif; font-size: 24px; color: WHITE;'>Movimentação de Estoque</span></b><br><b style='color: WHITE;'>$PERIODO<b></button></span></div></u><span style='font-family: "Comic Sans MS", cursive, sans-serif;'></span>
+]]></value-expression>
+                    </simple-value>
+                </container>
+                <container orientacao="V" tamanhoRelativo="100">
+                    <simple-value id="svl_hpf6pn">
+                        <args>
+                            <arg id="A_MESP" type="integer"/>
+                        </args>
+                        <value-expression><![CDATA[<img style='width: 100%; height: 100%;' src="http://dmaluminios.com.br/wp-content/uploads/2016/09/marca-dma-website.png" alt="DMA">]]></value-expression>
+                    </simple-value>
+                </container>
+            </container>
+            <container orientacao="H" tamanhoRelativo="842">
+                <container orientacao="H" tamanhoRelativo="100">
+                    <container orientacao="V" tamanhoRelativo="100">
+                        <container orientacao="H" tamanhoRelativo="110">
+                            <container orientacao="H" tamanhoRelativo="100">
+                                <container orientacao="V" tamanhoRelativo="171">
+                                    <simple-value id="svl_alslscn">
+                                        <args>
+                                            <arg id="A_MESP" type="integer"/>
+                                        </args>
+                                        <value-expression><![CDATA[<button style="border-radius: 5px; height: 100%; width: 100%"> <img src="https://img.icons8.com/metro/26/000000/double-left.png"> </button>]]></value-expression>
+                                        <on-click navigate-to="lvl_alu6134">
+                                            <param id="A_MESP">-6</param>
+                                        </on-click>
+                                    </simple-value>
+                                </container>
+                                <container orientacao="V" tamanhoRelativo="147">
+                                    <simple-value id="svl_ahgel4g">
+                                        <value-expression><![CDATA[<button style="border-radius: 5px; height: 100%; width: 100%"> <img src="https://img.icons8.com/metro/26/000000/double-right.png"> </button>]]></value-expression>
+                                        <on-click navigate-to="lvl_hpf6pc">
+                                            <param id="A_MESP">0</param>
+                                        </on-click>
+                                    </simple-value>
+                                </container>
+                            </container>
+                            <container orientacao="V" tamanhoRelativo="324">
+                                <simple-value id="svl_ahgel4h">
+                                    <expression type="sql" data-source="MGEDS"><![CDATA[SELECT
+TO_CHAR(ADD_MONTHS(TO_DATE(:MES1),NVL(:A_MESP,0)),'MONTH/YYYY') AS MES1,
+TO_CHAR(ADD_MONTHS(TO_DATE(:MES2),NVL(:A_MESP,0)),'MONTH/YYYY') AS MES2,
+TO_CHAR(ADD_MONTHS(TO_DATE(:MES3),NVL(:A_MESP,0)),'MONTH/YYYY') AS MES3,
+
+CASE WHEN TO_CHAR(ADD_MONTHS(TO_DATE(:MES1),NVL(:A_MESP,0)),'MONTH/YYYY') >= TO_CHAR(SYSDATE,'MM/YYYY') THEN '<b> <td colspan="4" style="text-align: center; background-color: lightgrey;">Realizado</b></td>' ELSE '<b> <td colspan="4" style="text-align: center; background-color: lightgrey;">Previsto</b></td>' END AS PREV1,
+CASE WHEN TO_CHAR(ADD_MONTHS(TO_DATE(:MES2),NVL(:A_MESP,0)),'MONTH/YYYY') >= TO_CHAR(SYSDATE,'MM/YYYY') THEN '<b> <td colspan="4" style="text-align: center; background-color: lightgrey;">Realizado</b></td>' ELSE '<b> <td colspan="4" style="text-align: center; background-color: lightgrey;">Previsto</b></td>' END AS PREV2,
+CASE WHEN TO_CHAR(ADD_MONTHS(TO_DATE(:MES3),NVL(:A_MESP,0)),'MONTH/YYYY') >= TO_CHAR(SYSDATE,'MM/YYYY') THEN '<b> <td colspan="4" style="text-align: center; background-color: lightgrey;">Realizado</b></td>' ELSE '<b> <td colspan="4" style="text-align: center; background-color: lightgrey;">Previsto</b></td>' END AS PREV3
+
+from dual]]></expression>
+                                    <metadata>
+                                        <field name="MES1" label="MES1" type="S" visible="true" useFooter="false"/>
+                                        <field name="MES2" label="MES2" type="S" visible="true" useFooter="false"/>
+                                        <field name="MES3" label="MES3" type="S" visible="true" useFooter="false"/>
+                                        <field name="PREV1" label="PREV1" type="S" visible="true" useFooter="false"/>
+                                        <field name="PREV2" label="PREV2" type="S" visible="true" useFooter="false"/>
+                                        <field name="PREV3" label="PREV3" type="S" visible="true" useFooter="false"/>
+                                    </metadata>
+                                    <value-expression><![CDATA[<style> #tbl1 { border-collapse: collapse; border: 1px solid #fefffd; font: 100%/1.6 "Myriad Pro", Verdana, sans-serif; text-align: center; }</style><div style=" width:100%; height: 100%" > <b> <!-- Aqui usamos width para alterar a largura da tabela e border para definir uma borda à tabela --> <table id="tbl1" width="100%" border="1%" style="height: 100%; "> <tr style="height: 50px; width: auto"> <!-- Aqui também usamos o width para definir a largura e o height para definir a altura --> <b> <td colspan="4" style="text-align: center; background-color: green; color: white">$MES1</b></td> <b> <td colspan="4" style="text-align: center; background-color: green; color: white">$MES2</b></td> <b> <td colspan="4" style="text-align: center; background-color: green; color: white">$MES3</b></td> </tr> <tr style="height: 50px;"> <!-- Aqui também usamos o width para definir a largura e o height para definir a altura --> $PREV1 $PREV2 $PREV3 </tr> </table> </b></div>]]></value-expression>
+                                    <refresh-details ui-list="svl_hpf6pm,svl_hpf6pn,svl_alslscn,svl_ahgel4g">
+                                        <param id="A_MESP">3</param>
+                                    </refresh-details>
+                                </simple-value>
+                            </container>
+                        </container>
+                        <container orientacao="V" tamanhoRelativo="388">
+                            <grid id="grd_ahgel42" multiplaSelecao="N">
+                                <args>
+                                    <arg id="A_MESP" type="integer"/>
+                                </args>
+                                <expression type="sql" data-source="MGEDS"><![CDATA[
+SELECT CONSULTA.* ,
+       0 AS SALDOINICIAL1,
+       0 AS SALDOINICIAL2,
+       0 AS SALDOINICIAL3,
+       (COMPRAS1-VENDAS1) AS ESTOQUE_FINAL1,
+       (COMPRAS2-VENDAS2) AS ESTOQUE_FINAL2,
+       (COMPRAS3-VENDAS3) AS ESTOQUE_FINAL3
+
+FROM (
+
+     SELECT PRO.CODPROD,
+            PRO.DESCRPROD,
+            PRO.REFERENCIA,
+            MED.TIPOMEDIA,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES1,NVL(:A_MESP,0))), 'MM/YYYY') = PED.DTPREVENT THEN PED.QTDENTREGUE
+                  ELSE 0 END) AS COMPRAS1,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES1,NVL(:A_MESP,0))), 'MM/YYYY') = MED.ANOMES
+                          THEN NVL(MED.VALOR, 0)
+                  ELSE 0 END) AS VENDAS1,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES2,NVL(:A_MESP,0))), 'MM/YYYY') = PED.DTPREVENT THEN PED.QTDENTREGUE
+                  ELSE 0 END) AS COMPRAS2,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES2,NVL(:A_MESP,0))), 'MM/YYYY') = MED.ANOMES
+                          THEN NVL(MED.VALOR, 0)
+                  ELSE 0 END) AS VENDAS2,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES3,NVL(:A_MESP,0))), 'MM/YYYY') = PED.DTPREVENT THEN PED.QTDENTREGUE
+                  ELSE 0 END) AS COMPRAS3,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES3,NVL(:A_MESP,0))), 'MM/YYYY') = MED.ANOMES
+                          THEN NVL(MED.VALOR, 0)
+                  ELSE 0 END) AS VENDAS3
+
+     FROM TGFPRO PRO LEFT JOIN VGF_MEDVENDAS MED ON PRO.CODPROD = MED.CODPROD
+            LEFT JOIN VGF_MEDCOMPRAS PED ON  MED.CODPROD = PED.CODPROD
+                                                AND MED.ANO = PED.ANO
+                                                AND MED.MES = PED.MES
+
+
+     WHERE 1=1
+       AND PRO.ATIVO = 'S'
+       AND PRO.DESCRPROD LIKE '%DM110%'
+       AND MED.ANO IN (TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES1,NVL(:A_MESP,0))),'YYYY')),TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES2,NVL(:A_MESP,0))),'YYYY')),TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES3,NVL(:A_MESP,0))),'YYYY')))
+       AND MED.MES IN (TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES1,NVL(:A_MESP,0))),'MM')),TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES2,NVL(:A_MESP,0))),'MM')),TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES3,NVL(:A_MESP,0))),'MM')))
+       AND(PRO.CODPROD = :CODPROD OR :CODPROD IS NULL)
+     GROUP BY PRO.CODPROD,
+              PRO.DESCRPROD,
+              PRO.REFERENCIA,
+              MED.TIPOMEDIA) CONSULTA
+
+
+ORDER BY CODPROD]]></expression>
+                                <metadata>
+                                    <field name="CODPROD" label="Cód." type="I" visible="true" useFooter="false"/>
+                                    <field name="DESCRPROD" label="Produto" type="S" visible="true" useFooter="false"/>
+                                    <field name="REFERENCIA" label="Referência" type="S" visible="true" useFooter="false"/>
+                                    <field name="TIPOMEDIA" label="Tipo Média" type="S" visible="true" useFooter="false"/>
+                                    <field name="COMPRAS1" label="Compras" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#0066CC">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="VENDAS1" label="Vendas" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#009900">
+  <b>$VALUE</b>
+</span>]]></formatter>
+                                    </field>
+                                    <field name="COMPRAS2" label="Compras(2)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#0066CC">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="VENDAS2" label="Vendas(2)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#009900">
+  <b>$VALUE</b>
+</span>]]></formatter>
+                                    </field>
+                                    <field name="COMPRAS3" label="Compras(3)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#0066CC">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="VENDAS3" label="Vendas(3)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#009900">
+  <b>$VALUE</b>
+</span>]]></formatter>
+                                    </field>
+                                    <field name="SALDOINICIAL1" label="Sld.Inicial" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#000000; background-color:#FFCC00">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="SALDOINICIAL2" label="Sld.Inicial(2)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="; background-color:#FFCC00">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="SALDOINICIAL3" label="Sld.Inicial(3)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="; background-color:#FFCC00">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="ESTOQUE_FINAL1" label="Est.Final" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter lessThan="0"><![CDATA[<span style="; background-color:#FF3300">$VALUE</span>]]></formatter>
+                                        <formatter greaterThan="0"><![CDATA[<span style="; background-color:#009900">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="ESTOQUE_FINAL2" label="Est.Final(2)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter lessThan="0"><![CDATA[<span style="; background-color:#FF3300">$VALUE</span>]]></formatter>
+                                        <formatter greaterThan="0"><![CDATA[<span style="; background-color:#009900">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="ESTOQUE_FINAL3" label="Est.Final(3)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter greaterThan="0"><![CDATA[<span style="; background-color:#009900">$VALUE</span>]]></formatter>
+                                        <formatter lessThan="0"><![CDATA[<span style="; background-color:#FF3300">$VALUE</span>]]></formatter>
+                                    </field>
+                                </metadata>
+                            </grid>
+                        </container>
+                    </container>
+                </container>
+            </container>
+        </container>
+    </level>
+    <level id="lvl_alu6134" description="Meses 11">
+        <args>
+            <arg id="A_MESP" type="integer"/>
+        </args>
+        <container orientacao="V" tamanhoRelativo="100">
+            <container orientacao="H" tamanhoRelativo="134">
+                <container orientacao="V" tamanhoRelativo="620">
+                    <simple-value id="svl_hpf6pm">
+                        <expression type="sql" data-source="MGEDS"><![CDATA[SELECT TO_CHAR(:PERIODO.INI,'MONTH/YYYY')||' - '||TO_CHAR(:PERIODO.FIN,'MONTH/YYYY') AS PERIODO, TO_CHAR(SYSDATE,'dd/MONTH/YYYY') AS DATA_ATUAL FROM DUAL]]></expression>
+                        <metadata>
+                            <field name="PERIODO" label="PERIODO" type="S" visible="true" useFooter="false"/>
+                            <field name="DATA_ATUAL" label="DATA_ATUAL" type="S" visible="true" useFooter="false"/>
+                        </metadata>
+                        <value-expression><![CDATA[<u><div style='text-align: left;'><span style='background-color: white; font-size: 18px; color: WHITE;'><button style="width: 100%; height: 100%; background-color: green; border: 1px solid BLACK; "><b><span style='font-family: Verdana, Geneva, sans-serif; font-size: 24px; color: WHITE;'>Movimentação de Estoque</span></b><br><b style='color: WHITE;'>$PERIODO<b></button></span></div></u><span style='font-family: "Comic Sans MS", cursive, sans-serif;'></span>
+]]></value-expression>
+                    </simple-value>
+                </container>
+                <container orientacao="V" tamanhoRelativo="100">
+                    <simple-value id="svl_hpf6pn">
+                        <args>
+                            <arg id="A_MESP" type="integer"/>
+                        </args>
+                        <value-expression><![CDATA[<img style='width: 100%; height: 100%;' src="http://dmaluminios.com.br/wp-content/uploads/2016/09/marca-dma-website.png" alt="DMA">]]></value-expression>
+                    </simple-value>
+                </container>
+            </container>
+            <container orientacao="H" tamanhoRelativo="842">
+                <container orientacao="H" tamanhoRelativo="100">
+                    <container orientacao="V" tamanhoRelativo="100">
+                        <container orientacao="H" tamanhoRelativo="110">
+                            <container orientacao="H" tamanhoRelativo="100">
+                                <container orientacao="V" tamanhoRelativo="171">
+                                    <simple-value id="svl_alslscn">
+                                        <args>
+                                            <arg id="A_MESP" type="integer"/>
+                                        </args>
+                                        <on-click navigate-to="lvl_hpf6pc">
+                                            <param id="A_MESP">0</param>
+                                        </on-click>
+                                    </simple-value>
+                                </container>
+                                <container orientacao="V" tamanhoRelativo="147">
+                                    <simple-value id="svl_ahgel4g">
+                                        <args>
+                                            <arg id="A_MESP" type="integer"/>
+                                        </args>
+                                        <value-expression><![CDATA[<button style="border-radius: 5px; height: 100%; width: 100%"> <img src="https://img.icons8.com/metro/26/000000/double-right.png"> </button>]]></value-expression>
+                                        <on-click navigate-to="lvl_alsltbt">
+                                            <param id="A_MESP">-3</param>
+                                        </on-click>
+                                    </simple-value>
+                                </container>
+                            </container>
+                            <container orientacao="V" tamanhoRelativo="324">
+                                <simple-value id="svl_ahgel4h">
+                                    <expression type="sql" data-source="MGEDS"><![CDATA[SELECT
+TO_CHAR(ADD_MONTHS(TO_DATE(:MES1),NVL(:A_MESP,0)),'MONTH/YYYY') AS MES1,
+TO_CHAR(ADD_MONTHS(TO_DATE(:MES2),NVL(:A_MESP,0)),'MONTH/YYYY') AS MES2,
+TO_CHAR(ADD_MONTHS(TO_DATE(:MES3),NVL(:A_MESP,0)),'MONTH/YYYY') AS MES3,
+
+CASE WHEN TO_CHAR(ADD_MONTHS(TO_DATE(:MES1),NVL(:A_MESP,0)),'MONTH/YYYY') >= TO_CHAR(SYSDATE,'MM/YYYY') THEN '<b> <td colspan="4" style="text-align: center; background-color: lightgrey;">Realizado</b></td>' ELSE '<b> <td colspan="4" style="text-align: center; background-color: lightgrey;">Previsto</b></td>' END AS PREV1,
+CASE WHEN TO_CHAR(ADD_MONTHS(TO_DATE(:MES2),NVL(:A_MESP,0)),'MONTH/YYYY') >= TO_CHAR(SYSDATE,'MM/YYYY') THEN '<b> <td colspan="4" style="text-align: center; background-color: lightgrey;">Realizado</b></td>' ELSE '<b> <td colspan="4" style="text-align: center; background-color: lightgrey;">Previsto</b></td>' END AS PREV2,
+CASE WHEN TO_CHAR(ADD_MONTHS(TO_DATE(:MES3),NVL(:A_MESP,0)),'MONTH/YYYY') >= TO_CHAR(SYSDATE,'MM/YYYY') THEN '<b> <td colspan="4" style="text-align: center; background-color: lightgrey;">Realizado</b></td>' ELSE '<b> <td colspan="4" style="text-align: center; background-color: lightgrey;">Previsto</b></td>' END AS PREV3
+
+from dual]]></expression>
+                                    <metadata>
+                                        <field name="MES1" label="MES1" type="S" visible="true" useFooter="false"/>
+                                        <field name="MES2" label="MES2" type="S" visible="true" useFooter="false"/>
+                                        <field name="MES3" label="MES3" type="S" visible="true" useFooter="false"/>
+                                        <field name="PREV1" label="PREV1" type="S" visible="true" useFooter="false"/>
+                                        <field name="PREV2" label="PREV2" type="S" visible="true" useFooter="false"/>
+                                        <field name="PREV3" label="PREV3" type="S" visible="true" useFooter="false"/>
+                                    </metadata>
+                                    <value-expression><![CDATA[<style> #tbl1 { border-collapse: collapse; border: 1px solid #fefffd; font: 100%/1.6 "Myriad Pro", Verdana, sans-serif; text-align: center; }</style><div style=" width:100%; height: 100%" > <b> <!-- Aqui usamos width para alterar a largura da tabela e border para definir uma borda à tabela --> <table id="tbl1" width="100%" border="1%" style="height: 100%; "> <tr style="height: 50px; width: auto"> <!-- Aqui também usamos o width para definir a largura e o height para definir a altura --> <b> <td colspan="4" style="text-align: center; background-color: green; color: white">$MES1</b></td> <b> <td colspan="4" style="text-align: center; background-color: green; color: white">$MES2</b></td> <b> <td colspan="4" style="text-align: center; background-color: green; color: white">$MES3</b></td> </tr> <tr style="height: 50px;"> <!-- Aqui também usamos o width para definir a largura e o height para definir a altura --> $PREV1 $PREV2 $PREV3 </tr> </table> </b></div>]]></value-expression>
+                                    <refresh-details ui-list="svl_hpf6pm,svl_hpf6pn,svl_alslscn,svl_ahgel4g">
+                                        <param id="A_MESP">3</param>
+                                    </refresh-details>
+                                </simple-value>
+                            </container>
+                        </container>
+                        <container orientacao="V" tamanhoRelativo="388">
+                            <grid id="grd_ahgel42" multiplaSelecao="N">
+                                <args>
+                                    <arg id="A_MESP" type="integer"/>
+                                </args>
+                                <expression type="sql" data-source="MGEDS"><![CDATA[
+SELECT CONSULTA.* ,
+       0 AS SALDOINICIAL1,
+       0 AS SALDOINICIAL2,
+       0 AS SALDOINICIAL3,
+       (COMPRAS1-VENDAS1) AS ESTOQUE_FINAL1,
+       (COMPRAS2-VENDAS2) AS ESTOQUE_FINAL2,
+       (COMPRAS3-VENDAS3) AS ESTOQUE_FINAL3
+
+FROM (
+
+     SELECT PRO.CODPROD,
+            PRO.DESCRPROD,
+            PRO.REFERENCIA,
+            MED.TIPOMEDIA,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES1,NVL(:A_MESP,0))), 'MM/YYYY') = PED.DTPREVENT THEN PED.QTDENTREGUE
+                  ELSE 0 END) AS COMPRAS1,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES1,NVL(:A_MESP,0))), 'MM/YYYY') = MED.ANOMES
+                          THEN NVL(MED.VALOR, 0)
+                  ELSE 0 END) AS VENDAS1,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES2,NVL(:A_MESP,0))), 'MM/YYYY') = PED.DTPREVENT THEN PED.QTDENTREGUE
+                  ELSE 0 END) AS COMPRAS2,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES2,NVL(:A_MESP,0))), 'MM/YYYY') = MED.ANOMES
+                          THEN NVL(MED.VALOR, 0)
+                  ELSE 0 END) AS VENDAS2,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES3,NVL(:A_MESP,0))), 'MM/YYYY') = PED.DTPREVENT THEN PED.QTDENTREGUE
+                  ELSE 0 END) AS COMPRAS3,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES3,NVL(:A_MESP,0))), 'MM/YYYY') = MED.ANOMES
+                          THEN NVL(MED.VALOR, 0)
+                  ELSE 0 END) AS VENDAS3
+
+     FROM TGFPRO PRO LEFT JOIN VGF_MEDVENDAS MED ON PRO.CODPROD = MED.CODPROD
+            LEFT JOIN VGF_MEDCOMPRAS PED ON  MED.CODPROD = PED.CODPROD
+                                                AND MED.ANO = PED.ANO
+                                                AND MED.MES = PED.MES
+
+
+     WHERE 1=1
+       AND PRO.ATIVO = 'S'
+       AND PRO.DESCRPROD LIKE '%DM110%'
+       AND MED.ANO IN (TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES1,NVL(:A_MESP,0))),'YYYY')),TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES2,NVL(:A_MESP,0))),'YYYY')),TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES3,NVL(:A_MESP,0))),'YYYY')))
+       AND MED.MES IN (TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES1,NVL(:A_MESP,0))),'MM')),TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES2,NVL(:A_MESP,0))),'MM')),TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES3,NVL(:A_MESP,0))),'MM')))
+       AND(PRO.CODPROD = :CODPROD OR :CODPROD IS NULL)
+     GROUP BY PRO.CODPROD,
+              PRO.DESCRPROD,
+              PRO.REFERENCIA,
+              MED.TIPOMEDIA) CONSULTA
+
+
+ORDER BY CODPROD]]></expression>
+                                <metadata>
+                                    <field name="CODPROD" label="Cód." type="I" visible="true" useFooter="false"/>
+                                    <field name="DESCRPROD" label="Produto" type="S" visible="true" useFooter="false"/>
+                                    <field name="REFERENCIA" label="Referência" type="S" visible="true" useFooter="false"/>
+                                    <field name="TIPOMEDIA" label="Tipo Média" type="S" visible="true" useFooter="false"/>
+                                    <field name="COMPRAS1" label="Compras" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#0066CC">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="VENDAS1" label="Vendas" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#009900">
+  <b>$VALUE</b>
+</span>]]></formatter>
+                                    </field>
+                                    <field name="COMPRAS2" label="Compras(2)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#0066CC">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="VENDAS2" label="Vendas(2)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#009900">
+  <b>$VALUE</b>
+</span>]]></formatter>
+                                    </field>
+                                    <field name="COMPRAS3" label="Compras(3)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#0066CC">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="VENDAS3" label="Vendas(3)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#009900">
+  <b>$VALUE</b>
+</span>]]></formatter>
+                                    </field>
+                                    <field name="SALDOINICIAL1" label="Sld.Inicial" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#000000; background-color:#FFCC00">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="SALDOINICIAL2" label="Sld.Inicial(2)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="; background-color:#FFCC00">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="SALDOINICIAL3" label="Sld.Inicial(3)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="; background-color:#FFCC00">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="ESTOQUE_FINAL1" label="Est.Final" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter lessThan="0"><![CDATA[<span style="; background-color:#FF3300">$VALUE</span>]]></formatter>
+                                        <formatter greaterThan="0"><![CDATA[<span style="; background-color:#009900">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="ESTOQUE_FINAL2" label="Est.Final(2)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter lessThan="0"><![CDATA[<span style="; background-color:#FF3300">$VALUE</span>]]></formatter>
+                                        <formatter greaterThan="0"><![CDATA[<span style="; background-color:#009900">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="ESTOQUE_FINAL3" label="Est.Final(3)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter greaterThan="0"><![CDATA[<span style="; background-color:#009900">$VALUE</span>]]></formatter>
+                                        <formatter lessThan="0"><![CDATA[<span style="; background-color:#FF3300">$VALUE</span>]]></formatter>
+                                    </field>
+                                </metadata>
+                            </grid>
+                        </container>
+                    </container>
+                </container>
+            </container>
+        </container>
+    </level>
+    <level id="lvl_alu617o" description="Meses 2">
+        <args>
+            <arg id="A_MESP" type="integer"/>
+        </args>
+        <container orientacao="V" tamanhoRelativo="100">
+            <container orientacao="H" tamanhoRelativo="134">
+                <container orientacao="V" tamanhoRelativo="620">
+                    <simple-value id="svl_hpf6pm">
+                        <expression type="sql" data-source="MGEDS"><![CDATA[SELECT TO_CHAR(:PERIODO.INI,'MONTH/YYYY')||' - '||TO_CHAR(:PERIODO.FIN,'MONTH/YYYY') AS PERIODO, TO_CHAR(SYSDATE,'dd/MONTH/YYYY') AS DATA_ATUAL FROM DUAL]]></expression>
+                        <metadata>
+                            <field name="PERIODO" label="PERIODO" type="S" visible="true" useFooter="false"/>
+                            <field name="DATA_ATUAL" label="DATA_ATUAL" type="S" visible="true" useFooter="false"/>
+                        </metadata>
+                        <value-expression><![CDATA[<u><div style='text-align: left;'><span style='background-color: white; font-size: 18px; color: WHITE;'><button style="width: 100%; height: 100%; background-color: green; border: 1px solid BLACK; "><b><span style='font-family: Verdana, Geneva, sans-serif; font-size: 24px; color: WHITE;'>Movimentação de Estoque</span></b><br><b style='color: WHITE;'>$PERIODO<b></button></span></div></u><span style='font-family: "Comic Sans MS", cursive, sans-serif;'></span>
+]]></value-expression>
+                    </simple-value>
+                </container>
+                <container orientacao="V" tamanhoRelativo="100">
+                    <simple-value id="svl_hpf6pn">
+                        <args>
+                            <arg id="A_MESP" type="integer"/>
+                        </args>
+                        <value-expression><![CDATA[<img style='width: 100%; height: 100%;' src="http://dmaluminios.com.br/wp-content/uploads/2016/09/marca-dma-website.png" alt="DMA">]]></value-expression>
+                    </simple-value>
+                </container>
+            </container>
+            <container orientacao="H" tamanhoRelativo="842">
+                <container orientacao="H" tamanhoRelativo="100">
+                    <container orientacao="V" tamanhoRelativo="100">
+                        <container orientacao="H" tamanhoRelativo="110">
+                            <container orientacao="H" tamanhoRelativo="100">
+                                <container orientacao="V" tamanhoRelativo="171">
+                                    <simple-value id="svl_alslscn">
+                                        <args>
+                                            <arg id="A_MESP" type="integer"/>
+                                        </args>
+                                        <value-expression><![CDATA[<button style="border-radius: 5px; height: 100%; width: 100%"> <img src="https://img.icons8.com/metro/26/000000/double-left.png"> </button>]]></value-expression>
+                                        <on-click navigate-to="lvl_hpf6pc">
+                                            <param id="A_MESP">0</param>
+                                        </on-click>
+                                    </simple-value>
+                                </container>
+                                <container orientacao="V" tamanhoRelativo="147">
+                                    <simple-value id="svl_ahgel4g">
+                                        <value-expression><![CDATA[<button style="border-radius: 5px; height: 100%; width: 100%"> <img src="https://img.icons8.com/metro/26/000000/double-right.png"> </button>]]></value-expression>
+                                        <on-click navigate-to="lvl_alu617p">
+                                            <param id="A_MESP">6</param>
+                                        </on-click>
+                                    </simple-value>
+                                </container>
+                            </container>
+                            <container orientacao="V" tamanhoRelativo="324">
+                                <simple-value id="svl_ahgel4h">
+                                    <expression type="sql" data-source="MGEDS"><![CDATA[SELECT
+TO_CHAR(ADD_MONTHS(TO_DATE(:MES1),NVL(:A_MESP,0)),'MONTH/YYYY') AS MES1,
+TO_CHAR(ADD_MONTHS(TO_DATE(:MES2),NVL(:A_MESP,0)),'MONTH/YYYY') AS MES2,
+TO_CHAR(ADD_MONTHS(TO_DATE(:MES3),NVL(:A_MESP,0)),'MONTH/YYYY') AS MES3,
+
+CASE WHEN TO_CHAR(ADD_MONTHS(TO_DATE(:MES1),NVL(:A_MESP,0)),'MONTH/YYYY') >= TO_CHAR(SYSDATE,'MM/YYYY') THEN '<b> <td colspan="4" style="text-align: center; background-color: lightgrey;">Realizado</b></td>' ELSE '<b> <td colspan="4" style="text-align: center; background-color: lightgrey;">Previsto</b></td>' END AS PREV1,
+CASE WHEN TO_CHAR(ADD_MONTHS(TO_DATE(:MES2),NVL(:A_MESP,0)),'MONTH/YYYY') >= TO_CHAR(SYSDATE,'MM/YYYY') THEN '<b> <td colspan="4" style="text-align: center; background-color: lightgrey;">Realizado</b></td>' ELSE '<b> <td colspan="4" style="text-align: center; background-color: lightgrey;">Previsto</b></td>' END AS PREV2,
+CASE WHEN TO_CHAR(ADD_MONTHS(TO_DATE(:MES3),NVL(:A_MESP,0)),'MONTH/YYYY') >= TO_CHAR(SYSDATE,'MM/YYYY') THEN '<b> <td colspan="4" style="text-align: center; background-color: lightgrey;">Realizado</b></td>' ELSE '<b> <td colspan="4" style="text-align: center; background-color: lightgrey;">Previsto</b></td>' END AS PREV3
+
+from dual]]></expression>
+                                    <metadata>
+                                        <field name="MES1" label="MES1" type="S" visible="true" useFooter="false"/>
+                                        <field name="MES2" label="MES2" type="S" visible="true" useFooter="false"/>
+                                        <field name="MES3" label="MES3" type="S" visible="true" useFooter="false"/>
+                                        <field name="PREV1" label="PREV1" type="S" visible="true" useFooter="false"/>
+                                        <field name="PREV2" label="PREV2" type="S" visible="true" useFooter="false"/>
+                                        <field name="PREV3" label="PREV3" type="S" visible="true" useFooter="false"/>
+                                    </metadata>
+                                    <value-expression><![CDATA[<style> #tbl1 { border-collapse: collapse; border: 1px solid #fefffd; font: 100%/1.6 "Myriad Pro", Verdana, sans-serif; text-align: center; }</style><div style=" width:100%; height: 100%" > <b> <!-- Aqui usamos width para alterar a largura da tabela e border para definir uma borda à tabela --> <table id="tbl1" width="100%" border="1%" style="height: 100%; "> <tr style="height: 50px; width: auto"> <!-- Aqui também usamos o width para definir a largura e o height para definir a altura --> <b> <td colspan="4" style="text-align: center; background-color: green; color: white">$MES1</b></td> <b> <td colspan="4" style="text-align: center; background-color: green; color: white">$MES2</b></td> <b> <td colspan="4" style="text-align: center; background-color: green; color: white">$MES3</b></td> </tr> <tr style="height: 50px;"> <!-- Aqui também usamos o width para definir a largura e o height para definir a altura --> $PREV1 $PREV2 $PREV3 </tr> </table> </b></div>]]></value-expression>
+                                    <refresh-details ui-list="svl_hpf6pm,svl_hpf6pn,svl_alslscn,svl_ahgel4g">
+                                        <param id="A_MESP">3</param>
+                                    </refresh-details>
+                                </simple-value>
+                            </container>
+                        </container>
+                        <container orientacao="V" tamanhoRelativo="388">
+                            <grid id="grd_ahgel42" multiplaSelecao="N">
+                                <args>
+                                    <arg id="A_MESP" type="integer"/>
+                                </args>
+                                <expression type="sql" data-source="MGEDS"><![CDATA[
+SELECT CONSULTA.* ,
+       0 AS SALDOINICIAL1,
+       0 AS SALDOINICIAL2,
+       0 AS SALDOINICIAL3,
+       (COMPRAS1-VENDAS1) AS ESTOQUE_FINAL1,
+       (COMPRAS2-VENDAS2) AS ESTOQUE_FINAL2,
+       (COMPRAS3-VENDAS3) AS ESTOQUE_FINAL3
+
+FROM (
+
+     SELECT PRO.CODPROD,
+            PRO.DESCRPROD,
+            PRO.REFERENCIA,
+            MED.TIPOMEDIA,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES1,NVL(:A_MESP,0))), 'MM/YYYY') = PED.DTPREVENT THEN PED.QTDENTREGUE
+                  ELSE 0 END) AS COMPRAS1,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES1,NVL(:A_MESP,0))), 'MM/YYYY') = MED.ANOMES
+                          THEN NVL(MED.VALOR, 0)
+                  ELSE 0 END) AS VENDAS1,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES2,NVL(:A_MESP,0))), 'MM/YYYY') = PED.DTPREVENT THEN PED.QTDENTREGUE
+                  ELSE 0 END) AS COMPRAS2,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES2,NVL(:A_MESP,0))), 'MM/YYYY') = MED.ANOMES
+                          THEN NVL(MED.VALOR, 0)
+                  ELSE 0 END) AS VENDAS2,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES3,NVL(:A_MESP,0))), 'MM/YYYY') = PED.DTPREVENT THEN PED.QTDENTREGUE
+                  ELSE 0 END) AS COMPRAS3,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES3,NVL(:A_MESP,0))), 'MM/YYYY') = MED.ANOMES
+                          THEN NVL(MED.VALOR, 0)
+                  ELSE 0 END) AS VENDAS3
+
+     FROM TGFPRO PRO LEFT JOIN VGF_MEDVENDAS MED ON PRO.CODPROD = MED.CODPROD
+            LEFT JOIN VGF_MEDCOMPRAS PED ON  MED.CODPROD = PED.CODPROD
+                                                AND MED.ANO = PED.ANO
+                                                AND MED.MES = PED.MES
+
+
+     WHERE 1=1
+       AND PRO.ATIVO = 'S'
+       AND PRO.DESCRPROD LIKE '%DM110%'
+       AND MED.ANO IN (TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES1,NVL(:A_MESP,0))),'YYYY')),TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES2,NVL(:A_MESP,0))),'YYYY')),TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES3,NVL(:A_MESP,0))),'YYYY')))
+       AND MED.MES IN (TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES1,NVL(:A_MESP,0))),'MM')),TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES2,NVL(:A_MESP,0))),'MM')),TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES3,NVL(:A_MESP,0))),'MM')))
+       AND(PRO.CODPROD = :CODPROD OR :CODPROD IS NULL)
+     GROUP BY PRO.CODPROD,
+              PRO.DESCRPROD,
+              PRO.REFERENCIA,
+              MED.TIPOMEDIA) CONSULTA
+
+
+ORDER BY CODPROD]]></expression>
+                                <metadata>
+                                    <field name="CODPROD" label="Cód." type="I" visible="true" useFooter="false"/>
+                                    <field name="DESCRPROD" label="Produto" type="S" visible="true" useFooter="false"/>
+                                    <field name="REFERENCIA" label="Referência" type="S" visible="true" useFooter="false"/>
+                                    <field name="TIPOMEDIA" label="Tipo Média" type="S" visible="true" useFooter="false"/>
+                                    <field name="COMPRAS1" label="Compras" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#0066CC">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="VENDAS1" label="Vendas" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#009900">
+  <b>$VALUE</b>
+</span>]]></formatter>
+                                    </field>
+                                    <field name="COMPRAS2" label="Compras(2)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#0066CC">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="VENDAS2" label="Vendas(2)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#009900">
+  <b>$VALUE</b>
+</span>]]></formatter>
+                                    </field>
+                                    <field name="COMPRAS3" label="Compras(3)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#0066CC">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="VENDAS3" label="Vendas(3)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#009900">
+  <b>$VALUE</b>
+</span>]]></formatter>
+                                    </field>
+                                    <field name="SALDOINICIAL1" label="Sld.Inicial" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#000000; background-color:#FFCC00">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="SALDOINICIAL2" label="Sld.Inicial(2)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="; background-color:#FFCC00">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="SALDOINICIAL3" label="Sld.Inicial(3)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="; background-color:#FFCC00">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="ESTOQUE_FINAL1" label="Est.Final" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter lessThan="0"><![CDATA[<span style="; background-color:#FF3300">$VALUE</span>]]></formatter>
+                                        <formatter greaterThan="0"><![CDATA[<span style="; background-color:#009900">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="ESTOQUE_FINAL2" label="Est.Final(2)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter lessThan="0"><![CDATA[<span style="; background-color:#FF3300">$VALUE</span>]]></formatter>
+                                        <formatter greaterThan="0"><![CDATA[<span style="; background-color:#009900">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="ESTOQUE_FINAL3" label="Est.Final(3)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter greaterThan="0"><![CDATA[<span style="; background-color:#009900">$VALUE</span>]]></formatter>
+                                        <formatter lessThan="0"><![CDATA[<span style="; background-color:#FF3300">$VALUE</span>]]></formatter>
+                                    </field>
+                                </metadata>
+                            </grid>
+                        </container>
+                    </container>
+                </container>
+            </container>
+        </container>
+    </level>
+    <level id="lvl_alu617p" description="Meses 22">
+        <args>
+            <arg id="A_MESP" type="integer"/>
+        </args>
+        <container orientacao="V" tamanhoRelativo="100">
+            <container orientacao="H" tamanhoRelativo="134">
+                <container orientacao="V" tamanhoRelativo="620">
+                    <simple-value id="svl_hpf6pm">
+                        <expression type="sql" data-source="MGEDS"><![CDATA[SELECT TO_CHAR(:PERIODO.INI,'MONTH/YYYY')||' - '||TO_CHAR(:PERIODO.FIN,'MONTH/YYYY') AS PERIODO, TO_CHAR(SYSDATE,'dd/MONTH/YYYY') AS DATA_ATUAL FROM DUAL]]></expression>
+                        <metadata>
+                            <field name="PERIODO" label="PERIODO" type="S" visible="true" useFooter="false"/>
+                            <field name="DATA_ATUAL" label="DATA_ATUAL" type="S" visible="true" useFooter="false"/>
+                        </metadata>
+                        <value-expression><![CDATA[<u><div style='text-align: left;'><span style='background-color: white; font-size: 18px; color: WHITE;'><button style="width: 100%; height: 100%; background-color: green; border: 1px solid BLACK; "><b><span style='font-family: Verdana, Geneva, sans-serif; font-size: 24px; color: WHITE;'>Movimentação de Estoque</span></b><br><b style='color: WHITE;'>$PERIODO<b></button></span></div></u><span style='font-family: "Comic Sans MS", cursive, sans-serif;'></span>
+]]></value-expression>
+                    </simple-value>
+                </container>
+                <container orientacao="V" tamanhoRelativo="100">
+                    <simple-value id="svl_hpf6pn">
+                        <args>
+                            <arg id="A_MESP" type="integer"/>
+                        </args>
+                        <value-expression><![CDATA[<img style='width: 100%; height: 100%;' src="http://dmaluminios.com.br/wp-content/uploads/2016/09/marca-dma-website.png" alt="DMA">]]></value-expression>
+                    </simple-value>
+                </container>
+            </container>
+            <container orientacao="H" tamanhoRelativo="842">
+                <container orientacao="H" tamanhoRelativo="100">
+                    <container orientacao="V" tamanhoRelativo="100">
+                        <container orientacao="H" tamanhoRelativo="110">
+                            <container orientacao="H" tamanhoRelativo="100">
+                                <container orientacao="V" tamanhoRelativo="171">
+                                    <simple-value id="svl_alslscn">
+                                        <args>
+                                            <arg id="A_MESP" type="integer"/>
+                                        </args>
+                                        <value-expression><![CDATA[<button style="border-radius: 5px; height: 100%; width: 100%"> <img src="https://img.icons8.com/metro/26/000000/double-left.png"> </button>]]></value-expression>
+                                        <on-click navigate-to="lvl_alu617o">
+                                            <param id="A_MESP">3</param>
+                                        </on-click>
+                                    </simple-value>
+                                </container>
+                                <container orientacao="V" tamanhoRelativo="147">
+                                    <simple-value id="svl_ahgel4g">
+                                        <args>
+                                            <arg id="A_MESP" type="integer"/>
+                                        </args>
+                                        <on-click navigate-to="lvl_hpf6pc">
+                                            <param id="A_MESP">0</param>
+                                        </on-click>
+                                    </simple-value>
+                                </container>
+                            </container>
+                            <container orientacao="V" tamanhoRelativo="324">
+                                <simple-value id="svl_ahgel4h">
+                                    <expression type="sql" data-source="MGEDS"><![CDATA[SELECT
+TO_CHAR(ADD_MONTHS(TO_DATE(:MES1),NVL(:A_MESP,0)),'MONTH/YYYY') AS MES1,
+TO_CHAR(ADD_MONTHS(TO_DATE(:MES2),NVL(:A_MESP,0)),'MONTH/YYYY') AS MES2,
+TO_CHAR(ADD_MONTHS(TO_DATE(:MES3),NVL(:A_MESP,0)),'MONTH/YYYY') AS MES3,
+
+CASE WHEN TO_CHAR(ADD_MONTHS(TO_DATE(:MES1),NVL(:A_MESP,0)),'MONTH/YYYY') >= TO_CHAR(SYSDATE,'MM/YYYY') THEN '<b> <td colspan="4" style="text-align: center; background-color: lightgrey;">Realizado</b></td>' ELSE '<b> <td colspan="4" style="text-align: center; background-color: lightgrey;">Previsto</b></td>' END AS PREV1,
+CASE WHEN TO_CHAR(ADD_MONTHS(TO_DATE(:MES2),NVL(:A_MESP,0)),'MONTH/YYYY') >= TO_CHAR(SYSDATE,'MM/YYYY') THEN '<b> <td colspan="4" style="text-align: center; background-color: lightgrey;">Realizado</b></td>' ELSE '<b> <td colspan="4" style="text-align: center; background-color: lightgrey;">Previsto</b></td>' END AS PREV2,
+CASE WHEN TO_CHAR(ADD_MONTHS(TO_DATE(:MES3),NVL(:A_MESP,0)),'MONTH/YYYY') >= TO_CHAR(SYSDATE,'MM/YYYY') THEN '<b> <td colspan="4" style="text-align: center; background-color: lightgrey;">Realizado</b></td>' ELSE '<b> <td colspan="4" style="text-align: center; background-color: lightgrey;">Previsto</b></td>' END AS PREV3
+
+from dual]]></expression>
+                                    <metadata>
+                                        <field name="MES1" label="MES1" type="S" visible="true" useFooter="false"/>
+                                        <field name="MES2" label="MES2" type="S" visible="true" useFooter="false"/>
+                                        <field name="MES3" label="MES3" type="S" visible="true" useFooter="false"/>
+                                        <field name="PREV1" label="PREV1" type="S" visible="true" useFooter="false"/>
+                                        <field name="PREV2" label="PREV2" type="S" visible="true" useFooter="false"/>
+                                        <field name="PREV3" label="PREV3" type="S" visible="true" useFooter="false"/>
+                                    </metadata>
+                                    <value-expression><![CDATA[<style> #tbl1 { border-collapse: collapse; border: 1px solid #fefffd; font: 100%/1.6 "Myriad Pro", Verdana, sans-serif; text-align: center; }</style><div style=" width:100%; height: 100%" > <b> <!-- Aqui usamos width para alterar a largura da tabela e border para definir uma borda à tabela --> <table id="tbl1" width="100%" border="1%" style="height: 100%; "> <tr style="height: 50px; width: auto"> <!-- Aqui também usamos o width para definir a largura e o height para definir a altura --> <b> <td colspan="4" style="text-align: center; background-color: green; color: white">$MES1</b></td> <b> <td colspan="4" style="text-align: center; background-color: green; color: white">$MES2</b></td> <b> <td colspan="4" style="text-align: center; background-color: green; color: white">$MES3</b></td> </tr> <tr style="height: 50px;"> <!-- Aqui também usamos o width para definir a largura e o height para definir a altura --> $PREV1 $PREV2 $PREV3 </tr> </table> </b></div>]]></value-expression>
+                                    <refresh-details ui-list="svl_hpf6pm,svl_hpf6pn,svl_alslscn,svl_ahgel4g">
+                                        <param id="A_MESP">3</param>
+                                    </refresh-details>
+                                </simple-value>
+                            </container>
+                        </container>
+                        <container orientacao="V" tamanhoRelativo="388">
+                            <grid id="grd_ahgel42" multiplaSelecao="N">
+                                <args>
+                                    <arg id="A_MESP" type="integer"/>
+                                </args>
+                                <expression type="sql" data-source="MGEDS"><![CDATA[
+SELECT CONSULTA.* ,
+       0 AS SALDOINICIAL1,
+       0 AS SALDOINICIAL2,
+       0 AS SALDOINICIAL3,
+       (COMPRAS1-VENDAS1) AS ESTOQUE_FINAL1,
+       (COMPRAS2-VENDAS2) AS ESTOQUE_FINAL2,
+       (COMPRAS3-VENDAS3) AS ESTOQUE_FINAL3
+
+FROM (
+
+     SELECT PRO.CODPROD,
+            PRO.DESCRPROD,
+            PRO.REFERENCIA,
+            MED.TIPOMEDIA,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES1,NVL(:A_MESP,0))), 'MM/YYYY') = PED.DTPREVENT THEN PED.QTDENTREGUE
+                  ELSE 0 END) AS COMPRAS1,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES1,NVL(:A_MESP,0))), 'MM/YYYY') = MED.ANOMES
+                          THEN NVL(MED.VALOR, 0)
+                  ELSE 0 END) AS VENDAS1,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES2,NVL(:A_MESP,0))), 'MM/YYYY') = PED.DTPREVENT THEN PED.QTDENTREGUE
+                  ELSE 0 END) AS COMPRAS2,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES2,NVL(:A_MESP,0))), 'MM/YYYY') = MED.ANOMES
+                          THEN NVL(MED.VALOR, 0)
+                  ELSE 0 END) AS VENDAS2,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES3,NVL(:A_MESP,0))), 'MM/YYYY') = PED.DTPREVENT THEN PED.QTDENTREGUE
+                  ELSE 0 END) AS COMPRAS3,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES3,NVL(:A_MESP,0))), 'MM/YYYY') = MED.ANOMES
+                          THEN NVL(MED.VALOR, 0)
+                  ELSE 0 END) AS VENDAS3
+
+     FROM TGFPRO PRO LEFT JOIN VGF_MEDVENDAS MED ON PRO.CODPROD = MED.CODPROD
+            LEFT JOIN VGF_MEDCOMPRAS PED ON  MED.CODPROD = PED.CODPROD
+                                                AND MED.ANO = PED.ANO
+                                                AND MED.MES = PED.MES
+
+
+     WHERE 1=1
+       AND PRO.ATIVO = 'S'
+       AND PRO.DESCRPROD LIKE '%DM110%'
+       AND MED.ANO IN (TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES1,NVL(:A_MESP,0))),'YYYY')),TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES2,NVL(:A_MESP,0))),'YYYY')),TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES3,NVL(:A_MESP,0))),'YYYY')))
+       AND MED.MES IN (TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES1,NVL(:A_MESP,0))),'MM')),TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES2,NVL(:A_MESP,0))),'MM')),TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES3,NVL(:A_MESP,0))),'MM')))
+       AND(PRO.CODPROD = :CODPROD OR :CODPROD IS NULL)
+     GROUP BY PRO.CODPROD,
+              PRO.DESCRPROD,
+              PRO.REFERENCIA,
+              MED.TIPOMEDIA) CONSULTA
+
+
+ORDER BY CODPROD]]></expression>
+                                <metadata>
+                                    <field name="CODPROD" label="Cód." type="I" visible="true" useFooter="false"/>
+                                    <field name="DESCRPROD" label="Produto" type="S" visible="true" useFooter="false"/>
+                                    <field name="REFERENCIA" label="Referência" type="S" visible="true" useFooter="false"/>
+                                    <field name="TIPOMEDIA" label="Tipo Média" type="S" visible="true" useFooter="false"/>
+                                    <field name="COMPRAS1" label="Compras" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#0066CC">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="VENDAS1" label="Vendas" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#009900">
+  <b>$VALUE</b>
+</span>]]></formatter>
+                                    </field>
+                                    <field name="COMPRAS2" label="Compras(2)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#0066CC">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="VENDAS2" label="Vendas(2)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#009900">
+  <b>$VALUE</b>
+</span>]]></formatter>
+                                    </field>
+                                    <field name="COMPRAS3" label="Compras(3)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#0066CC">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="VENDAS3" label="Vendas(3)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#009900">
+  <b>$VALUE</b>
+</span>]]></formatter>
+                                    </field>
+                                    <field name="SALDOINICIAL1" label="Sld.Inicial" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#000000; background-color:#FFCC00">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="SALDOINICIAL2" label="Sld.Inicial(2)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="; background-color:#FFCC00">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="SALDOINICIAL3" label="Sld.Inicial(3)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="; background-color:#FFCC00">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="ESTOQUE_FINAL1" label="Est.Final" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter lessThan="0"><![CDATA[<span style="; background-color:#FF3300">$VALUE</span>]]></formatter>
+                                        <formatter greaterThan="0"><![CDATA[<span style="; background-color:#009900">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="ESTOQUE_FINAL2" label="Est.Final(2)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter lessThan="0"><![CDATA[<span style="; background-color:#FF3300">$VALUE</span>]]></formatter>
+                                        <formatter greaterThan="0"><![CDATA[<span style="; background-color:#009900">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="ESTOQUE_FINAL3" label="Est.Final(3)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter greaterThan="0"><![CDATA[<span style="; background-color:#009900">$VALUE</span>]]></formatter>
+                                        <formatter lessThan="0"><![CDATA[<span style="; background-color:#FF3300">$VALUE</span>]]></formatter>
+                                    </field>
+                                </metadata>
+                            </grid>
+                        </container>
+                    </container>
+                </container>
+            </container>
+        </container>
+    </level>
+    <level id="lvl_aofnuym" description="Produtos Alternativos">
+        <args>
+            <arg id="A_MESP" type="integer"/>
+        </args>
+        <container orientacao="V" tamanhoRelativo="100">
+            <container orientacao="H" tamanhoRelativo="134">
+                <container orientacao="V" tamanhoRelativo="620">
+                    <simple-value id="svl_hpf6pm">
+                        <expression type="sql" data-source="MGEDS"><![CDATA[SELECT TO_CHAR(:PERIODO.INI,'MONTH/YYYY')||' - '||TO_CHAR(:PERIODO.FIN,'MONTH/YYYY') AS PERIODO, TO_CHAR(SYSDATE,'dd/MONTH/YYYY') AS DATA_ATUAL FROM DUAL]]></expression>
+                        <metadata>
+                            <field name="PERIODO" label="PERIODO" type="S" visible="true" useFooter="false"/>
+                            <field name="DATA_ATUAL" label="DATA_ATUAL" type="S" visible="true" useFooter="false"/>
+                        </metadata>
+                        <value-expression><![CDATA[<u><div style='text-align: left;'><span style='background-color: white; font-size: 18px; color: WHITE;'><button style="width: 100%; height: 100%; background-color: green; border: 1px solid BLACK; "><b><span style='font-family: Verdana, Geneva, sans-serif; font-size: 24px; color: WHITE;'>Movimentação de Estoque</span></b><br><b style='color: WHITE;'>$PERIODO<b></button></span></div></u><span style='font-family: "Comic Sans MS", cursive, sans-serif;'></span>
+]]></value-expression>
+                    </simple-value>
+                </container>
+                <container orientacao="V" tamanhoRelativo="100">
+                    <simple-value id="svl_hpf6pn">
+                        <args>
+                            <arg id="A_MESP" type="integer"/>
+                        </args>
+                        <value-expression><![CDATA[<img style='width: 100%; height: 100%;' src="http://dmaluminios.com.br/wp-content/uploads/2016/09/marca-dma-website.png" alt="DMA">]]></value-expression>
+                    </simple-value>
+                </container>
+            </container>
+            <container orientacao="H" tamanhoRelativo="842">
+                <container orientacao="H" tamanhoRelativo="100">
+                    <container orientacao="V" tamanhoRelativo="100">
+                        <container orientacao="H" tamanhoRelativo="110">
+                            <container orientacao="H" tamanhoRelativo="100">
+                                <container orientacao="V" tamanhoRelativo="171">
+                                    <simple-value id="svl_alslscn">
+                                        <args>
+                                            <arg id="A_MESP" type="integer"/>
+                                        </args>
+                                        <value-expression><![CDATA[<button style="border-radius: 5px; height: 100%; width: 100%"> <img src="https://img.icons8.com/metro/26/000000/double-left.png"> </button>]]></value-expression>
+                                        <on-click navigate-to="lvl_alu617o">
+                                            <param id="A_MESP">3</param>
+                                        </on-click>
+                                    </simple-value>
+                                </container>
+                                <container orientacao="V" tamanhoRelativo="147">
+                                    <simple-value id="svl_ahgel4g">
+                                        <args>
+                                            <arg id="A_MESP" type="integer"/>
+                                        </args>
+                                        <on-click navigate-to="lvl_hpf6pc">
+                                            <param id="A_MESP">0</param>
+                                        </on-click>
+                                    </simple-value>
+                                </container>
+                            </container>
+                            <container orientacao="V" tamanhoRelativo="324">
+                                <simple-value id="svl_ahgel4h">
+                                    <expression type="sql" data-source="MGEDS"><![CDATA[SELECT
+TO_CHAR(ADD_MONTHS(TO_DATE(:MES1),NVL(:A_MESP,0)),'MONTH/YYYY') AS MES1,
+TO_CHAR(ADD_MONTHS(TO_DATE(:MES2),NVL(:A_MESP,0)),'MONTH/YYYY') AS MES2,
+TO_CHAR(ADD_MONTHS(TO_DATE(:MES3),NVL(:A_MESP,0)),'MONTH/YYYY') AS MES3,
+
+CASE WHEN TO_CHAR(ADD_MONTHS(TO_DATE(:MES1),NVL(:A_MESP,0)),'MONTH/YYYY') >= TO_CHAR(SYSDATE,'MM/YYYY') THEN '<b> <td colspan="4" style="text-align: center; background-color: lightgrey;">Realizado</b></td>' ELSE '<b> <td colspan="4" style="text-align: center; background-color: lightgrey;">Previsto</b></td>' END AS PREV1,
+CASE WHEN TO_CHAR(ADD_MONTHS(TO_DATE(:MES2),NVL(:A_MESP,0)),'MONTH/YYYY') >= TO_CHAR(SYSDATE,'MM/YYYY') THEN '<b> <td colspan="4" style="text-align: center; background-color: lightgrey;">Realizado</b></td>' ELSE '<b> <td colspan="4" style="text-align: center; background-color: lightgrey;">Previsto</b></td>' END AS PREV2,
+CASE WHEN TO_CHAR(ADD_MONTHS(TO_DATE(:MES3),NVL(:A_MESP,0)),'MONTH/YYYY') >= TO_CHAR(SYSDATE,'MM/YYYY') THEN '<b> <td colspan="4" style="text-align: center; background-color: lightgrey;">Realizado</b></td>' ELSE '<b> <td colspan="4" style="text-align: center; background-color: lightgrey;">Previsto</b></td>' END AS PREV3
+
+from dual]]></expression>
+                                    <metadata>
+                                        <field name="MES1" label="MES1" type="S" visible="true" useFooter="false"/>
+                                        <field name="MES2" label="MES2" type="S" visible="true" useFooter="false"/>
+                                        <field name="MES3" label="MES3" type="S" visible="true" useFooter="false"/>
+                                        <field name="PREV1" label="PREV1" type="S" visible="true" useFooter="false"/>
+                                        <field name="PREV2" label="PREV2" type="S" visible="true" useFooter="false"/>
+                                        <field name="PREV3" label="PREV3" type="S" visible="true" useFooter="false"/>
+                                    </metadata>
+                                    <value-expression><![CDATA[<style> #tbl1 { border-collapse: collapse; border: 1px solid #fefffd; font: 100%/1.6 "Myriad Pro", Verdana, sans-serif; text-align: center; }</style><div style=" width:100%; height: 100%" > <b> <!-- Aqui usamos width para alterar a largura da tabela e border para definir uma borda à tabela --> <table id="tbl1" width="100%" border="1%" style="height: 100%; "> <tr style="height: 50px; width: auto"> <!-- Aqui também usamos o width para definir a largura e o height para definir a altura --> <b> <td colspan="4" style="text-align: center; background-color: green; color: white">$MES1</b></td> <b> <td colspan="4" style="text-align: center; background-color: green; color: white">$MES2</b></td> <b> <td colspan="4" style="text-align: center; background-color: green; color: white">$MES3</b></td> </tr> <tr style="height: 50px;"> <!-- Aqui também usamos o width para definir a largura e o height para definir a altura --> $PREV1 $PREV2 $PREV3 </tr> </table> </b></div>]]></value-expression>
+                                    <refresh-details ui-list="svl_hpf6pm,svl_hpf6pn,svl_alslscn,svl_ahgel4g">
+                                        <param id="A_MESP">3</param>
+                                    </refresh-details>
+                                </simple-value>
+                            </container>
+                        </container>
+                        <container orientacao="V" tamanhoRelativo="388">
+                            <grid id="grd_ahgel42" multiplaSelecao="N">
+                                <args>
+                                    <arg id="A_MESP" type="integer"/>
+                                </args>
+                                <expression type="sql" data-source="MGEDS"><![CDATA[
+SELECT CONSULTA.* ,
+       0 AS SALDOINICIAL1,
+       0 AS SALDOINICIAL2,
+       0 AS SALDOINICIAL3,
+       (COMPRAS1-VENDAS1) AS ESTOQUE_FINAL1,
+       (COMPRAS2-VENDAS2) AS ESTOQUE_FINAL2,
+       (COMPRAS3-VENDAS3) AS ESTOQUE_FINAL3
+
+FROM (
+
+     SELECT PRO.CODPROD,
+            PRO.DESCRPROD,
+            PRO.REFERENCIA,
+            MED.TIPOMEDIA,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES1,NVL(:A_MESP,0))), 'MM/YYYY') = PED.DTPREVENT THEN PED.QTDENTREGUE
+                  ELSE 0 END) AS COMPRAS1,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES1,NVL(:A_MESP,0))), 'MM/YYYY') = MED.ANOMES
+                          THEN NVL(MED.VALOR, 0)
+                  ELSE 0 END) AS VENDAS1,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES2,NVL(:A_MESP,0))), 'MM/YYYY') = PED.DTPREVENT THEN PED.QTDENTREGUE
+                  ELSE 0 END) AS COMPRAS2,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES2,NVL(:A_MESP,0))), 'MM/YYYY') = MED.ANOMES
+                          THEN NVL(MED.VALOR, 0)
+                  ELSE 0 END) AS VENDAS2,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES3,NVL(:A_MESP,0))), 'MM/YYYY') = PED.DTPREVENT THEN PED.QTDENTREGUE
+                  ELSE 0 END) AS COMPRAS3,
+            SUM(CASE
+                  WHEN TO_CHAR(TO_DATE(ADD_MONTHS(:MES3,NVL(:A_MESP,0))), 'MM/YYYY') = MED.ANOMES
+                          THEN NVL(MED.VALOR, 0)
+                  ELSE 0 END) AS VENDAS3
+
+     FROM TGFPRO PRO LEFT JOIN VGF_MEDVENDAS MED ON PRO.CODPROD = MED.CODPROD
+            LEFT JOIN VGF_MEDCOMPRAS PED ON  MED.CODPROD = PED.CODPROD
+                                                AND MED.ANO = PED.ANO
+                                                AND MED.MES = PED.MES
+
+
+     WHERE 1=1
+       AND PRO.ATIVO = 'S'
+       AND PRO.DESCRPROD LIKE '%DM110%'
+       AND MED.ANO IN (TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES1,NVL(:A_MESP,0))),'YYYY')),TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES2,NVL(:A_MESP,0))),'YYYY')),TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES3,NVL(:A_MESP,0))),'YYYY')))
+       AND MED.MES IN (TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES1,NVL(:A_MESP,0))),'MM')),TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES2,NVL(:A_MESP,0))),'MM')),TO_NUMBER(TO_CHAR(TO_DATE(ADD_MONTHS(:MES3,NVL(:A_MESP,0))),'MM')))
+       AND(PRO.CODPROD = :CODPROD OR :CODPROD IS NULL)
+     GROUP BY PRO.CODPROD,
+              PRO.DESCRPROD,
+              PRO.REFERENCIA,
+              MED.TIPOMEDIA) CONSULTA
+
+
+ORDER BY CODPROD]]></expression>
+                                <metadata>
+                                    <field name="CODPROD" label="Cód." type="I" visible="true" useFooter="false"/>
+                                    <field name="DESCRPROD" label="Produto" type="S" visible="true" useFooter="false"/>
+                                    <field name="REFERENCIA" label="Referência" type="S" visible="true" useFooter="false"/>
+                                    <field name="TIPOMEDIA" label="Tipo Média" type="S" visible="true" useFooter="false"/>
+                                    <field name="COMPRAS1" label="Compras" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#0066CC">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="VENDAS1" label="Vendas" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#009900">
+  <b>$VALUE</b>
+</span>]]></formatter>
+                                    </field>
+                                    <field name="COMPRAS2" label="Compras(2)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#0066CC">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="VENDAS2" label="Vendas(2)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#009900">
+  <b>$VALUE</b>
+</span>]]></formatter>
+                                    </field>
+                                    <field name="COMPRAS3" label="Compras(3)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#0066CC">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="VENDAS3" label="Vendas(3)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#009900">
+  <b>$VALUE</b>
+</span>]]></formatter>
+                                    </field>
+                                    <field name="SALDOINICIAL1" label="Sld.Inicial" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="color:#000000; background-color:#FFCC00">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="SALDOINICIAL2" label="Sld.Inicial(2)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="; background-color:#FFCC00">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="SALDOINICIAL3" label="Sld.Inicial(3)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter isEmpty="false"><![CDATA[<span style="; background-color:#FFCC00">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="ESTOQUE_FINAL1" label="Est.Final" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter lessThan="0"><![CDATA[<span style="; background-color:#FF3300">$VALUE</span>]]></formatter>
+                                        <formatter greaterThan="0"><![CDATA[<span style="; background-color:#009900">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="ESTOQUE_FINAL2" label="Est.Final(2)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter lessThan="0"><![CDATA[<span style="; background-color:#FF3300">$VALUE</span>]]></formatter>
+                                        <formatter greaterThan="0"><![CDATA[<span style="; background-color:#009900">$VALUE</span>]]></formatter>
+                                    </field>
+                                    <field name="ESTOQUE_FINAL3" label="Est.Final(3)" type="F" visible="true" useFooter="false" mask="#.##0,00">
+                                        <formatter greaterThan="0"><![CDATA[<span style="; background-color:#009900">$VALUE</span>]]></formatter>
+                                        <formatter lessThan="0"><![CDATA[<span style="; background-color:#FF3300">$VALUE</span>]]></formatter>
+                                    </field>
+                                </metadata>
+                            </grid>
+                        </container>
+                    </container>
+                </container>
+            </container>
+        </container>
+    </level>
+</gadget>
